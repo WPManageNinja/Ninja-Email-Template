@@ -124,6 +124,7 @@ class Ninja_Email_Editor {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-ninja-email-editor-public.php';
 
+
 		$this->loader = new Ninja_Email_Editor_Loader();
 
 	}
@@ -159,6 +160,9 @@ class Ninja_Email_Editor {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_footer', $plugin_admin, 'react_load');
+		$this->loader->add_action('wp_ajax_ninja_email_editor_update', $plugin_admin, 'email_update');
+
+		$this->loader->add_action('wp_ajax_ninja_email_get_email', $plugin_admin, 'get_email');
 
 	}
 

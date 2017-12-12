@@ -35,10 +35,14 @@ class Ninja_Email_Editor_Admin {
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
+	 		
+	 		global $wpdb;* @
+	 access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
+
+	protected $emailTemplate;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -48,9 +52,15 @@ class Ninja_Email_Editor_Admin {
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
+		
+		// global $wpdb;
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ). 'includes/NinjaDB/autoload.php';
+
+		$this->emailTemplate = ninjaDB('ninja_email_template');
 		$this->addMenu();
 
 	}
@@ -85,6 +95,35 @@ class Ninja_Email_Editor_Admin {
 
 	public function menu_page_callback() {
 		
+	}
+
+	public function email_update() {
+		//$getId = $_POST['tem_id'] ? $_POST['tem_id'] : false;
+
+		if ( true ) {
+			$data = array(
+				'title' => sanitize_text_field( $_POST['tem_email_tile'] ),
+				'template' => wp_kses_post( $_POST['tem_email_tempate'] ),
+				'status' => 'published',
+				'created_at' => date( 'Y-m-d H:i:s' ),
+				'updated_at' => date( 'Y-m-d H:i:s' ),
+			);
+
+			$insertId = $this->emailTemplate->insert($data);
+
+			wp_send_json_success( array(
+				'status' => 'Success',
+				'item' => $this->emailTemplate->find($insertId)
+			), 200);
+		}
+	}
+
+	public function get_email() {
+		wp_send_json_success(
+			array(
+				'items' => $this->emailTemplate->get()
+			)
+		);
 	}
 
 	/**
