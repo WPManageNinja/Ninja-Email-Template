@@ -17871,6 +17871,7 @@ var Test = function (_Component) {
     };
     _this.exportHtml = _this.exportHtml.bind(_this);
     _this.view = _this.view.bind(_this);
+    _this.fetchData = _this.fetchData.bind(_this);
     return _this;
   }
 
@@ -17887,10 +17888,11 @@ var Test = function (_Component) {
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'button',
             { onClick: this.exportHtml },
-            'Export HTML'
+            'Save Template'
           )
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_email_editor__["a" /* default */], {
+          minHeight: '700px',
           ref: function ref(editor) {
             return htmlEditor = editor;
           },
@@ -17899,18 +17901,51 @@ var Test = function (_Component) {
       );
     }
   }, {
+    key: 'fetchData',
+    value: function fetchData() {
+      var data = {
+        action: 'ninja_email_get_email'
+      };
+
+      jQuery.get(ajaxurl, data).then(function (res) {
+        console.log(res);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    }
+  }, {
     key: 'exportHtml',
     value: function exportHtml() {
       var _this2 = this;
 
       console.log(htmlEditor);
-      htmlEditor.saveDesign(function (design) {
+      htmlEditor.exportHtml(function (r) {
+        var design = r.design,
+            html = r.html;
+
+
+        console.log(html);
+
         _this2.setState({
           editor: design
+        });
+
+        var data = {
+          action: 'ninja_email_editor_update',
+          tem_email_tile: 'hello',
+          tem_email_tempate: html
+        };
+
+        jQuery.post(ajaxurl, data).then(function (res) {
+          console.log(res);
+        }).fail(function (err) {
+          console.log(err);
         });
         // const { design, html } = data
         console.log('exportHtml', design);
       });
+
+      this.fetchData();
     }
   }, {
     key: 'view',
